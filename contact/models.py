@@ -18,9 +18,9 @@ class Message(models.Model):
 
 
 class Contact(models.Model):
-    email = models.EmailField()
-    address = models.CharField(max_length=128)
-    address_link = models.URLField(blank=True, null=True)
+    email = models.EmailField('Почта', )
+    address = models.CharField('Aдрес', max_length=128)
+    address_link = models.URLField('Ссылка на адрес', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Контакт'

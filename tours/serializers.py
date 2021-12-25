@@ -48,15 +48,15 @@ class TourSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ['id', 'name', 'body', 'category', 'included', 'excluded', 'draft',
-                  'day', 'photos', 'accommodation', 'date_prices', 'programs', 'questions']
+        fields = ['id', 'name', 'body', 'category', 'included', 'excluded', 'day', 'count_review', 'image',
+                  'photos', 'accommodation', 'date_prices', 'programs', 'questions']
 
 
 class TourListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ['id', 'name', 'body', 'category', 'draft', 'day', ]
+        fields = ['id', 'name', 'image', 'body_list', 'category', 'day', 'count_review']
 
 
 class CategoryListSerializer(serializers.ModelSerializer):

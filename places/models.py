@@ -6,9 +6,9 @@ class Place(models.Model):
         COUNTRY = 'Country'
         REGION = 'Region'
         TOWN = 'Town'
-    name = models.CharField(max_length=100)
-    body = models.TextField()
-    type = models.CharField(max_length=50, choices=Type.choices, )
+    name = models.CharField('Название', max_length=100)
+    body = models.TextField('Описанние')
+    type = models.CharField('Категория', max_length=50, choices=Type.choices, )
 
     class Meta:
         verbose_name = 'Место'

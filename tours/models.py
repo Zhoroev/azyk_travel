@@ -1,13 +1,14 @@
 from django.db import models
-from django.db.models import Max
+from django.db.models import Max, Count
 from django.contrib.auth import get_user_model
-from django.utils.html import mark_safe
 
 User = get_user_model()
 # TODO: название туров в модели отзывов def __str__
+# TODO: DataPrice -> OneToOneField
+
 
 class Category(models.Model):
-    name = models.CharField(max_length=200, unique=True)
+    name = models.CharField('Название', max_length=200, unique=True)
 
     class Meta:
         verbose_name = 'Категория'
@@ -20,19 +21,30 @@ class Category(models.Model):
 
 class Tour(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='tours', verbose_name='Категория')
-    name = models.CharField('Название', max_length=128,)
-    body = models.TextField('Описание')
+    name = models.CharField('Название', max_length=128, blank=True, null=True,)
+    body = models.TextField('Описание', blank=True, null=True,)
+    body_list = models.CharField('Краткое описание', max_length=250, blank=True, null=True,)
     included = models.TextField('Включено', blank=True, null=True, )
     excluded = models.TextField('Не включено', blank=True, null=True, )
-    draft = models.BooleanField('Черновик', default=True)
+    draft = models.BooleanField('Черновик', default=True, )
+    image = models.ImageField('Основное изображение', upload_to='tour_pictures/%Y/%m/%d/', blank=True, null=True,)
+    is_top = models.BooleanField('Топ', default=False)
 
     def day(self):
         days = self.programs.all().aggregate(Max('day'))
-        if days:
+        print(days)
+        if days['day__max']:
             return days['day__max']
+        return 1
+
+    def count_review(self):
+        reviews = self.reviews.all()
+        if reviews:
+            return len(reviews)
         return 0
 
     day.short_description = 'Количество дней'
+    count_review.short_description = 'Количество отзывов'
 
     class Meta:
         verbose_name = 'Тур'
@@ -63,7 +75,7 @@ class TourPhoto(models.Model):
 
     class Meta:
         verbose_name = 'Изображение'
-        verbose_name_plural = 'Изображения'
+        verbose_name_plural = 'Галерея'
 
     def __str__(self):
         return self.name
@@ -92,7 +104,7 @@ class DatePrice(models.Model):
         AVAILABLE = 'Available'
         GUARANTEED = 'Guaranteed'
 
-    tour = models.OneToOneField(Tour, on_delete=models.CASCADE, related_name='date_prices', verbose_name='Тур')
+    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name='date_prices', verbose_name='Тур')
     start = models.DateTimeField('Начало', blank=True, null=True)
     end = models.DateTimeField('Конец', blank=True, null=True)
     min_people = models.PositiveIntegerField('Минимальное количество людей',)

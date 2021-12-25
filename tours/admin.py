@@ -33,6 +33,7 @@ class TourPhotoInline(admin.StackedInline):
     readonly_fields = ['get_image',]
 
 
+
 class ProgramInline(admin.StackedInline):
     model = Program
     extra = 1
@@ -45,15 +46,16 @@ class ReviewInline(admin.StackedInline):
 
 
 class TourAdmin(admin.ModelAdmin):
-    list_display = ['name', 'category', 'day', 'draft']
-    list_filter = ['category', 'draft']
+    list_display = ['name', 'category', 'day', 'count_review', 'draft', 'is_top', ]
+    list_filter = ['category', 'draft', 'is_top',]
     # search_fields = ['name', ]
     list_editable = ('draft',)
     inlines = [TourPhotoInline, ProgramInline, ReviewInline, AccommodationInline, DatePriceInline, QuestionInline]
     fieldsets = (
-        (None, {'fields': ('name', 'category', 'body', 'included', 'excluded', 'draft',)}),
+        (None, {'fields': ('name', 'category', 'body', 'body_list', 'included', 'excluded',
+                           'draft', 'is_top', 'image', 'day', 'count_review', )}),
     )
-    # readonly_fields = ('day', )
+    readonly_fields = ['day', 'count_review']
 
 
 admin.site.register(Tour, TourAdmin)
